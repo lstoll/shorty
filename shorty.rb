@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'mongo'
+require 'exceptional'
 
 include Mongo
 
@@ -13,7 +14,14 @@ else
 end
 
 configure :production do
-  enable :raise_errors
+  set :raise_errors, false
+  Exceptional.configure ENV['EXCEPTIONAL_API_KEY']
+  Exceptional::Remote.startup_announce
+  (::Exceptional::ApplicationEnvironment.to_hash('sinatra'))
+  error do
+    Exceptional::Catcher.handle_with_rack(request.env
+                                          ['sinatra.error'],request.env, request)
+  end
 end
 
 get '/' do
