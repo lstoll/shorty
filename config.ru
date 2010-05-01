@@ -1,4 +1,6 @@
 require 'shorty'
-require 'rack_hoptoad'
+require 'exceptional'
+
+use Rack::Exceptional, ENV['EXCEPTIONAL_API_KEY']
 
 run Sinatra::Application

@@ -14,13 +14,9 @@ else
 end
 
 configure :production do
-  set :raise_errors, false
-  Exceptional.configure ENV['EXCEPTIONAL_API_KEY']
-  Exceptional::Remote.startup_announce(::Exceptional::ApplicationEnvironment.to_hash('sinatra'))
-  error do
-    Exceptional::Catcher.handle_with_rack(request.env,
-                                          ['sinatra.error'],request.env, request)
-  end
+  set :raise_errors, true
+  require 'exceptional'
+  use Rack::Exceptional, ENV['EXCEPTIONAL_API_KEY']
 end
 
 get '/' do
